@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ипотечный калькулятор</title>
+    <!-- Подключаем стили Bootstrap (CSS) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/css/bootstrap-slider.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<style>
+    /* Стили для кнопок программ процентных ставок */
+    .btn-interest-program {
+    margin-right: 10px; /* Добавляем отступ справа */
+    margin-bottom: 10px; /* Добавляем отступ снизу */
+    background-color: #1f83ef; /* Цвет по умолчанию */
+    color: #fff; /* Цвет текста по умолчанию */
+    border: none;
+  }
+  
+  /* Стили для активной кнопки программы процентной ставки */
+  .btn-interest-program.active {
+    background-color: #0e63c5; /* Цвет при активном состоянии */
+  }
+  .container {
+    width: 100%;
+    max-width: 1000px; /* Максимальная ширина контейнера */
+    margin: auto;
+  }
+  
+  
+  @media (max-width: 768px) {
+  
+    .form-group label {
+      font-size: 14px; /* Уменьшаем размер шрифта меток для мобильных устройств */
+  
+    }
+    .form-group.select{
+      display: flex;
+      flex-direction: column;
+    }
+    form-control {
+      font-size: 14px; /* Уменьшаем размер шрифта для вводных полей */
+      width: 100%; /* Растягиваем инпуты на всю доступную ширину */
+      margin-bottom: 10px; /* Добавляем отступ снизу */
+      
+    }
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      width: 100%; /* Растягиваем кнопки на всю доступную ширину */
+      margin-right: 0; /* Убираем правый отступ */
+    }
+  
+    .btn-interest-program{
+      font-size: 20px;
+    }
+  }
+  @media (max-width: 1000px){
+      .form-group label {
+          font-size: 18px; /* Уменьшаем размер шрифта меток для мобильных устройств */
+      
+        }
+        .form-group.select{
+          display: flex;
+          flex-direction: column;
+        }
+        form-control {
+          font-size: 18px; /* Уменьшаем размер шрифта для вводных полей */
+          width: 100%; /* Растягиваем инпуты на всю доступную ширину */
+          margin-bottom: 10px; /* Добавляем отступ снизу */
+          
+        }
+        .btn-group {
+          display: flex;
+          flex-direction: column;
+          width: 100%; /* Растягиваем кнопки на всю доступную ширину */
+          margin-right: 0; /* Убираем правый отступ */
+        }
+      
+        .btn-interest-program{
+          font-size: 20px;
+        }
+  }
+  @media (max-width: 1200px){
+      .form-group label {
+          font-size: 18px; /* Уменьшаем размер шрифта меток для мобильных устройств */
+      
+        }
+        .form-group.select{
+          display: flex;
+          flex-direction: column;
+        }
+        form-control {
+          font-size: 18px; /* Уменьшаем размер шрифта для вводных полей */
+          width: 100%; /* Растягиваем инпуты на всю доступную ширину */
+          margin-bottom: 10px; /* Добавляем отступ снизу */
+          
+        }
+        .btn-group {
+          display: flex;
+          flex-direction: column;
+          width: 100%; /* Растягиваем кнопки на всю доступную ширину */
+          margin-right: 0; /* Убираем правый отступ */
+        }
+      
+        .btn-interest-program{
+          font-size: 20px;
+        }
+  }
+
+</style>
+<body>
+  <div class="container mt-5">
+      <h1 class="mb-4">Ипотечный калькулятор</h1>
+
+     
+
+      
+
+      <div class="form-group">
+          <label for="loanPurpose">Цель кредита:</label>
+          <select class="form-control" id="loanPurpose">
+              <option value="secondHand">Квартира на вторичном рынке</option>
+              <option value="newBuilding">Квартира в новостройке</option>
+              <option value="buyHome">Купить дом</option>
+              <option value="buildingHome">Построить дом</option>
+              <option value="buyLand">Купить землю или дачный дом</option>
+          </select>
+      </div>
+
+      <div class="form-group">
+          <label>Программа процентной ставки:</label>
+          <div class="btn-group" role="group" id="interestPrograms">
+              <!-- Кнопки будут добавлены программой JavaScript -->
+          </div>
+      </div>
+
+      <div class="form-group">
+          <label for="loanAmount">Сумма кредита:</label>
+          <input type="text" class="form-control" id="loanAmount" placeholder="Сумма кредита">
+      </div>
+
+      <div class="form-group">
+          <label for="initialPayment">Первоначальный взнос: </label>
+          <input type="text" class="form-control" id="initialPayment" placeholder="Первоначальный взнос">
+      </div>
+
+     
+
+      <div class="form-group">
+          <label for="loanTerm">Срок кредита (в годах):</label>
+          <!-- Добавляем ползунок (slider) с минимальным и максимальным значением -->
+          <input type="text" id="loanTermSlider" data-slider-min="1" data-slider-max="30" data-slider-step="1" data-slider-value="1"/>
+          <span id="loanTermValue">1 год</span>
+      </div>
+
+      <div class="form-group">
+          <label>Услуги, снижающие ставку по кредиту:</label>
+          <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="incomeToBank">
+              <label class="custom-control-label" for="incomeToBank">Получаю зп на счет или карту банка (-1%)</label>
+          </div>
+          <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="confirmIncome">
+              <label class="custom-control-label" for="confirmIncome">Могу подтвердить доход (-0.8%)</label>
+          </div>
+      </div>
+
+
+      <button class="btn btn-primary" onclick="calculateMortgage()">Рассчитать</button>
+
+      <h2 class="mt-4">Результаты:</h2>
+      <p>Ежемесячный платеж: <span id="monthlyPayment"></span></p>
+      <p>Сумма кредита <span id="totalPayment"></span></p>
+      <p>Процентная ставка: <span id="totalInterestRate"></span>%</p>
+  </div>
+      
+  </div>
+
+    <!-- Подключаем скрипты Bootstrap и jQuery (JS) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/7.1.3/imask.min.js" integrity="sha512-54QZ6V8x2x5v5+8JNy98/rP4Ui3CSNlv8KLVS5tTQJCx/Ag4jgUlVUqe54TJ3QLJYSVwt5xPbINvxX7A9XHdHQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+      // Обработчик изменения выбора цели кредита
+      document.getElementById('loanPurpose').addEventListener('change', function() {
+          const selectedOption = this.value;
+          updateInterestPrograms(selectedOption);
+      });
+
+      let selectedInterestRate = 0;
+
+      // Обработчик клика на кнопках программ процентных ставок
+      document.addEventListener('click', function(event) {
+          if (event.target.classList.contains('btn-interest-program')) {
+              selectedInterestRate = parseFloat(event.target.getAttribute('data-interest-rate'));
+
+              // Удаляем класс активности со всех кнопок
+              document.querySelectorAll('.btn-interest-program').forEach(function(button) {
+                  button.classList.remove('active');
+              });
+
+              // Добавляем класс активности к текущей кнопке
+              event.target.classList.add('active');
+          }
+      });
+
+      function updateInterestPrograms(selectedOption) {
+          const interestProgramsContainer = document.getElementById('interestPrograms');
+          interestProgramsContainer.innerHTML = ''; // Очищаем контейнер
+
+          if (selectedOption === 'secondHand') {
+              // Программы для вторичного рынка
+              const programs = [
+                  { name: 'Базовая программа', rate: 13.7 },
+                  { name: 'Военная программа', rate: 13.1 },
+                  { name: 'Госсертификаты', rate: 2 },
+                  { name: 'Без первого взноса', rate: 14.5 },
+              ];
+
+              programs.forEach(program => {
+                  const button = document.createElement('button');
+                  button.className = 'btn btn-secondary btn-interest-program';
+                  button.textContent = `${program.name} - от ${program.rate}%`;
+                  button.setAttribute('data-interest-rate', program.rate);
+                  interestProgramsContainer.appendChild(button);
+              });
+          } else if (selectedOption === 'newBuilding') {
+              // Программы для новостройки
+              const programs = [
+                  { name: 'Базовая программа', rate: 13.7 },
+                  { name: 'Ипотека для IT', rate: 5 },
+                  { name: 'Господдержка', rate: 8 },
+                  { name: 'Семейная', rate: 6 },
+
+
+                  { name: 'Военная программа', rate: 13.1 },
+                  { name: 'Без первого взноса', rate: 14.5 },
+              ];
+
+              programs.forEach(program => {
+                  const button = document.createElement('button');
+                  button.className = 'btn btn-secondary btn-interest-program';
+                  button.textContent = `${program.name} - от ${program.rate}%`;
+                  button.setAttribute('data-interest-rate', program.rate);
+                  interestProgramsContainer.appendChild(button);
+              });
+          } else if (selectedOption === 'buyHome'){
+              const programs = [
+                  { name: 'Базовая программа', rate: 13.7 },
+                  { name: 'Военная программа', rate: 13.1 },
+                  { name: 'Госсертификаты', rate: 4 },
+                  { name: 'Без первого взноса', rate: 14.5 },
+                  { name: 'Семейная', rate: 6 },
+                  { name: 'Ипотека для IT', rate: 5 },
+                  { name: 'Господдержка', rate: 8 },
+              ];
+              programs.forEach(program => {
+                  const button = document.createElement('button');
+                  button.className = 'btn btn-secondary btn-interest-program';
+                  button.textContent = `${program.name} - от ${program.rate}%`;
+                  button.setAttribute('data-interest-rate', program.rate);
+                  interestProgramsContainer.appendChild(button);
+              })
+          } else if (selectedOption === 'buildingHome'){
+              const programs = [
+                  { name: 'Базовая программа', rate: 13.7 },
+                  { name: 'Ипотека для IT', rate: 5 },
+                  { name: 'Господдержка', rate: 8 },
+                  { name: 'Семейная', rate: 6 },
+              ];
+              programs.forEach(program => {
+                  const button = document.createElement('button');
+                  button.className = 'btn btn-secondary btn-interest-program';
+                  button.textContent = `${program.name} - от ${program.rate}%`;
+                  button.setAttribute('data-interest-rate', program.rate);
+                  interestProgramsContainer.appendChild(button);
+              })
+          } 
+      }
+
+      // Инициализируем программы процентных ставок по умолчанию
+      updateInterestPrograms('secondHand');
+
+
+      const loanTermSlider = new Slider('#loanTermSlider', {
+          min: 1,
+          max: 30,
+          step: 1,
+          tooltip: 'always',
+      });
+
+      // Обновление текста срока кредита при изменении ползунка
+      loanTermSlider.on('slide', function(sliderValue) {
+          document.getElementById('loanTermValue').textContent = sliderValue + ' ' + getLoanTermLabel(sliderValue);
+      });
+
+      function getLoanTermLabel(years) {
+          if (years === 1) {
+              return 'год';
+          } else if (years >= 2 && years <= 4) {
+              return 'года';
+          } else {
+              return 'лет';
+          }
+      }
+
+      function formatNumberWithSpaces(number) {
+          return new Intl.NumberFormat('ru-RU').format(number);
+      }
+
+      function calculateMortgage() {
+    const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+    const initialPayment = parseFloat(document.getElementById('initialPayment').value);
+    const interestRate = selectedInterestRate / 100 / 12;
+    const loanTerm = parseFloat(document.getElementById('loanTermSlider').value) * 12;
+
+    // Услуги, снижающие ставку по кредиту
+    const incomeToBankDiscount = document.getElementById('incomeToBank').checked ? 0.001 : 0;
+    const confirmIncomeDiscount = document.getElementById('confirmIncome').checked ? 0.0008 : 0;
+
+    // Общая процентная ставка с учетом услуг
+    const totalInterestRate = (interestRate - incomeToBankDiscount - confirmIncomeDiscount) * 12 * 100;
+
+    // Валидация полей ввода
+    if (isNaN(loanAmount) || isNaN(initialPayment) || isNaN(interestRate) || isNaN(loanTerm)) {
+        document.getElementById('loanAmount').classList.add('is-invalid');
+        document.getElementById('initialPayment').classList.add('is-invalid');
+        return;
+    }
+
+    document.getElementById('loanAmount').classList.remove('is-invalid');
+    document.getElementById('initialPayment').classList.remove('is-invalid');
+
+    const totalLoanAmount = loanAmount - initialPayment;
+    const monthlyPayment = (totalLoanAmount * (interestRate - incomeToBankDiscount - confirmIncomeDiscount)) / (1 - Math.pow(1 + (interestRate - incomeToBankDiscount - confirmIncomeDiscount), -loanTerm));
+    const totalPayment = monthlyPayment * loanTerm;
+    const interestPaid = totalPayment - totalLoanAmount;
+
+    const interestPercentage = (interestPaid / totalLoanAmount) * 100;
+
+    document.getElementById('monthlyPayment').textContent = monthlyPayment.toFixed(2);
+    document.getElementById('totalPayment').textContent = totalPayment.toFixed(2);
+    document.getElementById('totalInterestRate').textContent = totalInterestRate.toFixed(2); // Обновляем общую процентную ставку
+}
+
+  </script>
+</body>
+</html>
